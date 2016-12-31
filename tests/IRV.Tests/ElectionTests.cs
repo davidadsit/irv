@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System.Linq;
+using NUnit.Framework;
 
 namespace IRV.Tests
 {
@@ -82,6 +83,20 @@ namespace IRV.Tests
             var vote3 = new Vote("Voter 3", "Candidate 2");
             election.RegisterVotes(vote1, vote2, vote3);
             Assert.That(election.Winner, Is.EqualTo("Candidate 2"));
+        }
+
+        [TestCase(2, 1, "Candidate 1")]
+        [TestCase(1, 2, "Candidate 2")]
+        [TestCase(1, 1, "Inconclusive")]
+        public void Multiple_votes_for_two_candidates(int candidate1, int candidate2, string winner)
+        {
+            election.RegisterVotes(Enumerable.Range(1, candidate1)
+                .Select(x => new Vote($"Voter {x}", "Candidate 1")).ToArray());
+            election.RegisterVotes(Enumerable.Range(1, candidate2)
+                .Select(x => new Vote($"Voter {x}", "Candidate 2")).ToArray());
+            
+            Assert.That(election.Winner, Is.EqualTo(winner));
+            Assert.That(election.VoteCount, Is.EqualTo(candidate1 + candidate2));
         }
     }
 }
