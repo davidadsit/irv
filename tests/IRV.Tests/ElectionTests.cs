@@ -91,12 +91,47 @@ namespace IRV.Tests
         public void Multiple_votes_for_two_candidates(int candidate1, int candidate2, string winner)
         {
             election.RegisterVotes(Enumerable.Range(1, candidate1)
-                .Select(x => new Vote($"Voter {x}", "Candidate 1")).ToArray());
+                .Select(x => new Vote($"Voter {x}", "Candidate 1"))
+                .ToArray());
             election.RegisterVotes(Enumerable.Range(1, candidate2)
-                .Select(x => new Vote($"Voter {x}", "Candidate 2")).ToArray());
-            
+                .Select(x => new Vote($"Voter {candidate1 + x}", "Candidate 2"))
+                .ToArray());
+
             Assert.That(election.Winner, Is.EqualTo(winner));
             Assert.That(election.VoteCount, Is.EqualTo(candidate1 + candidate2));
+        }
+    }
+
+
+    [TestFixture]
+    public class Election_with_three_candidates_tests
+    {
+        private Election election;
+
+        [SetUp]
+        public void SetUp()
+        {
+            election = new Election("Election Name");
+        }
+
+        [TestCase(2, 1, 1, "Candidate 1")]
+        [TestCase(1, 2, 1, "Candidate 2")]
+        [TestCase(1, 1, 2, "Candidate 3")]
+        [TestCase(1, 1, 1, "Inconclusive")]
+        public void Multiple_votes_for_two_candidates(int candidate1, int candidate2, int candidate3, string winner)
+        {
+            election.RegisterVotes(Enumerable.Range(1, candidate1)
+                .Select(x => new Vote($"Voter {x}", "Candidate 1"))
+                .ToArray());
+            election.RegisterVotes(Enumerable.Range(1, candidate2)
+                .Select(x => new Vote($"Voter {candidate1 + x}", "Candidate 2"))
+                .ToArray());
+            election.RegisterVotes(Enumerable.Range(1, candidate3)
+                .Select(x => new Vote($"Voter {candidate1 + candidate2 + x}", "Candidate 3"))
+                .ToArray());
+
+            Assert.That(election.Winner, Is.EqualTo(winner));
+            Assert.That(election.VoteCount, Is.EqualTo(candidate1 + candidate2 + candidate3));
         }
     }
 }
