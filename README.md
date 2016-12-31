@@ -1,4 +1,4 @@
-# irv
+# Instant Runoff Voting
 An implementation of instant run off voting in dotnet core
 
 ## Plan
