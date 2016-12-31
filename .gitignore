@@ -1,0 +1,7 @@
+.vs
+.idea
+*NCrunch*
+bin
+obj
+*.lock.json
+TestResults.*

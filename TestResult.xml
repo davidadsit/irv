@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<test-run id="0" testcasecount="1" result="Passed" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0" portable-engine-version="3.3.0.0" start-time="2016-12-31 07:50:12Z" end-time="2016-12-31 07:50:12Z" duration="0.170525">
+  <test-suite type="Assembly" id="1002" name="IRV.Tests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" fullname="IRV.Tests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" runstate="Runnable" testcasecount="1" result="Passed" start-time="2016-12-31 07:50:12Z" end-time="2016-12-31 07:50:12Z" duration="0.056318" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <settings>
+      <setting name="WorkDirectory" value="C:\dev\irv" />
+    </settings>
+    <test-suite type="TestSuite" id="1003" name="IRV" fullname="IRV" runstate="Runnable" testcasecount="1" result="Passed" start-time="2016-12-31 07:50:12Z" end-time="2016-12-31 07:50:12Z" duration="0.047594" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <test-suite type="TestSuite" id="1004" name="Tests" fullname="IRV.Tests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2016-12-31 07:50:12Z" end-time="2016-12-31 07:50:12Z" duration="0.047363" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <test-suite type="TestFixture" id="1000" name="ElectionTests" fullname="IRV.Tests.ElectionTests" classname="IRV.Tests.ElectionTests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2016-12-31 07:50:12Z" end-time="2016-12-31 07:50:12Z" duration="0.045126" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <test-case id="1001" name="An_election_can_be_created" fullname="IRV.Tests.ElectionTests.An_election_can_be_created" methodname="An_election_can_be_created" classname="IRV.Tests.ElectionTests" runstate="Runnable" seed="719552585" result="Passed" start-time="2016-12-31 07:50:12Z" end-time="2016-12-31 07:50:12Z" duration="0.004983" asserts="0" />
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

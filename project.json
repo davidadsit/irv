@@ -1,0 +1,7 @@
+{
+    "version": "1.0.0-*",
+    "dependencies": {
+        "IRV": "1.0.0-*",
+        "IRV.Tests": "1.0.0-*"
+    }
+}
