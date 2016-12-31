@@ -13,9 +13,9 @@ namespace IRV
             Selections = selections;
         }
 
-        public string TopChoice()
+        public string TopChoice(params string[] excludedCandidates)
         {
-            return Selections.First();
+            return Selections.FirstOrDefault(x => excludedCandidates.All(y => x != y)) ?? "None";
         }
     }
 }

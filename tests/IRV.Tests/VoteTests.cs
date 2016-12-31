@@ -32,5 +32,26 @@ namespace IRV.Tests
             var vote = new Vote("Voter", "Candidate 3", "Candidate 1", "Candidate 2");
             Assert.That(vote.TopChoice(), Is.EqualTo("Candidate 3"));
         }
+
+        [Test]
+        public void TopChoice_with_one_candidate_excluded()
+        {
+            var vote = new Vote("Voter", "Candidate 3", "Candidate 1", "Candidate 2");
+            Assert.That(vote.TopChoice("Candidate 3"), Is.EqualTo("Candidate 1"));
+        }
+
+        [Test]
+        public void TopChoice_with_two_candidate_excluded()
+        {
+            var vote = new Vote("Voter", "Candidate 3", "Candidate 1", "Candidate 2");
+            Assert.That(vote.TopChoice("Candidate 3", "Candidate 1"), Is.EqualTo("Candidate 2"));
+        }
+
+        [Test]
+        public void TopChoice_with_all_candidate_excluded()
+        {
+            var vote = new Vote("Voter", "Candidate 3", "Candidate 1", "Candidate 2");
+            Assert.That(vote.TopChoice("Candidate 3", "Candidate 1", "Candidate 2"), Is.EqualTo("None"));
+        }
     }
 }
