@@ -208,10 +208,10 @@ namespace IRV.Tests
         [Test]
         public void When_multiple_iterations_are_required_to_reach_a_winner()
         {
-            election.RegisterVotes(new Vote("Voter", "A"));
-            election.RegisterVotes(new Vote("Voter", "A"));
             election.RegisterVotes(new Vote("Voter", "A", "C"));
             election.RegisterVotes(new Vote("Voter", "A", "C"));
+            election.RegisterVotes(new Vote("Voter", "A", "D"));
+            election.RegisterVotes(new Vote("Voter", "A", "E"));
 
             election.RegisterVotes(new Vote("Voter", "B", "C"));
             election.RegisterVotes(new Vote("Voter", "B", "E", "C"));
