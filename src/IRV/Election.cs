@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace IRV
@@ -16,30 +15,28 @@ namespace IRV
         public string Name { get; }
         public int VoteCount => votes.Count;
 
-        public string Winner
+        public string Winner()
         {
-            get
+            if (!votes.Any()) return "Inconclusive";
+
+            var excludedCandidates = new List<string>();
+            var candidateCount = CountVotes(new List<string>()).Keys.Count;
+
+            do
             {
-                if (!votes.Any()) return "Inconclusive";
-
-                var excludedCandidates = new List<string>();
-
-                do
+                var counts = CountVotes(excludedCandidates);
+                var winners = GetWinners(counts);
+                if (winners.Count == 1)
                 {
-                    var counts = CountVotes(excludedCandidates);
-                    var winners = GetWinners(counts);
-                    if (winners.Count == 1)
+                    var winner = winners.First();
+                    if ((double) winner.Value/VoteCount > 0.5)
                     {
-                        var winner = winners.First();
-                        if ((double) winner.Value / VoteCount > 0.5)
-                        {
-                            return winner.Key == "None" ? "Inconclusive" : winner.Key;
-                        }
+                        return winner.Key;
                     }
-                    excludedCandidates.AddRange(GetExcludedCandidates(counts));
-                    if (excludedCandidates.Count == counts.Keys.Count) return "Inconclusive";
-                } while (true);
-            }
+                }
+                excludedCandidates.AddRange(GetExcludedCandidates(counts));
+                if (excludedCandidates.Count == candidateCount) return "Inconclusive";
+            } while (true);
         }
 
         private static List<string> GetExcludedCandidates(Dictionary<string, int> counts)
@@ -60,7 +57,11 @@ namespace IRV
             var counts = new Dictionary<string, int>();
             foreach (var vote in votes)
             {
-                counts.IncrementCounter(vote.TopChoice(excludedCandidates.ToArray()));
+                var topChoice = vote.TopChoice(excludedCandidates.ToArray());
+                if (topChoice != "None")
+                {
+                    counts.IncrementCounter(topChoice);
+                }
             }
             return counts;
         }

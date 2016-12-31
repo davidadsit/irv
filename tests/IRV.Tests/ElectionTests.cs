@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using NUnit.Framework;
 
 namespace IRV.Tests
@@ -57,8 +58,8 @@ namespace IRV.Tests
             Assert.That(election.Winner, Is.EqualTo("Inconclusive"));
         }
 
-        [TestCase("Candidate 1")]
-        [TestCase("Candidate 2")]
+        [TestCase("A")]
+        [TestCase("B")]
         public void A_single_vote_is_cast(string candidate)
         {
             var vote = new Vote("Voter 1", candidate);
@@ -69,8 +70,8 @@ namespace IRV.Tests
         [Test]
         public void Two_votes_are_cast_for_different_candidates()
         {
-            var vote1 = new Vote("Voter 1", "Candidate 1");
-            var vote2 = new Vote("Voter 2", "Candidate 2");
+            var vote1 = new Vote("Voter 1", "A");
+            var vote2 = new Vote("Voter 2", "B");
             election.RegisterVotes(vote1, vote2);
             Assert.That(election.Winner, Is.EqualTo("Inconclusive"));
         }
@@ -78,23 +79,23 @@ namespace IRV.Tests
         [Test]
         public void Three_votes_are_cast_with_a_conclusive_result()
         {
-            var vote1 = new Vote("Voter 1", "Candidate 1");
-            var vote2 = new Vote("Voter 2", "Candidate 2");
-            var vote3 = new Vote("Voter 3", "Candidate 2");
+            var vote1 = new Vote("Voter 1", "A");
+            var vote2 = new Vote("Voter 2", "B");
+            var vote3 = new Vote("Voter 3", "B");
             election.RegisterVotes(vote1, vote2, vote3);
-            Assert.That(election.Winner, Is.EqualTo("Candidate 2"));
+            Assert.That(election.Winner, Is.EqualTo("B"));
         }
 
-        [TestCase(2, 1, "Candidate 1")]
-        [TestCase(1, 2, "Candidate 2")]
+        [TestCase(2, 1, "A")]
+        [TestCase(1, 2, "B")]
         [TestCase(1, 1, "Inconclusive")]
         public void Multiple_votes_for_two_candidates(int candidate1, int candidate2, string winner)
         {
             election.RegisterVotes(Enumerable.Range(1, candidate1)
-                .Select(x => new Vote($"Voter {x}", "Candidate 1"))
+                .Select(x => new Vote($"Voter {x}", "A"))
                 .ToArray());
             election.RegisterVotes(Enumerable.Range(1, candidate2)
-                .Select(x => new Vote($"Voter {candidate1 + x}", "Candidate 2"))
+                .Select(x => new Vote($"Voter {candidate1 + x}", "B"))
                 .ToArray());
 
             Assert.That(election.Winner, Is.EqualTo(winner));
@@ -113,20 +114,20 @@ namespace IRV.Tests
             election = new Election("Election Name");
         }
 
-        [TestCase(3, 1, 1, "Candidate 1")]
-        [TestCase(1, 3, 1, "Candidate 2")]
-        [TestCase(1, 1, 3, "Candidate 3")]
+        [TestCase(3, 1, 1, "A")]
+        [TestCase(1, 3, 1, "B")]
+        [TestCase(1, 1, 3, "C")]
         [TestCase(1, 1, 1, "Inconclusive")]
         public void Multiple_votes_for_two_candidates(int candidate1, int candidate2, int candidate3, string winner)
         {
             election.RegisterVotes(Enumerable.Range(1, candidate1)
-                .Select(x => new Vote($"Voter {x}", "Candidate 1"))
+                .Select(x => new Vote($"Voter {x}", "A"))
                 .ToArray());
             election.RegisterVotes(Enumerable.Range(1, candidate2)
-                .Select(x => new Vote($"Voter {candidate1 + x}", "Candidate 2"))
+                .Select(x => new Vote($"Voter {candidate1 + x}", "B"))
                 .ToArray());
             election.RegisterVotes(Enumerable.Range(1, candidate3)
-                .Select(x => new Vote($"Voter {candidate1 + candidate2 + x}", "Candidate 3"))
+                .Select(x => new Vote($"Voter {candidate1 + candidate2 + x}", "C"))
                 .ToArray());
 
             Assert.That(election.Winner, Is.EqualTo(winner));
@@ -148,13 +149,13 @@ namespace IRV.Tests
         [Test]
         public void With_a_third_party_spoiler()
         {
-            election.RegisterVotes(new Vote("Voter 1", "Candidate 1"));
-            election.RegisterVotes(new Vote("Voter 2", "Candidate 1"));
+            election.RegisterVotes(new Vote("Voter 1", "A"));
+            election.RegisterVotes(new Vote("Voter 2", "A"));
 
-            election.RegisterVotes(new Vote("Voter 3", "Candidate 2"));
-            election.RegisterVotes(new Vote("Voter 4", "Candidate 2"));
+            election.RegisterVotes(new Vote("Voter 3", "B"));
+            election.RegisterVotes(new Vote("Voter 4", "B"));
 
-            election.RegisterVotes(new Vote("Voter 5", "Candidate 3"));
+            election.RegisterVotes(new Vote("Voter 5", "C"));
 
             Assert.That(election.Winner, Is.EqualTo("Inconclusive"));
         }
@@ -162,35 +163,35 @@ namespace IRV.Tests
         [Test]
         public void When_the_third_party_vote_selects_a_second_choice()
         {
-            election.RegisterVotes(new Vote("Voter 1", "Candidate 1"));
-            election.RegisterVotes(new Vote("Voter 2", "Candidate 1"));
-            election.RegisterVotes(new Vote("Voter 3", "Candidate 1"));
+            election.RegisterVotes(new Vote("Voter 1", "A"));
+            election.RegisterVotes(new Vote("Voter 2", "A"));
+            election.RegisterVotes(new Vote("Voter 3", "A"));
 
-            election.RegisterVotes(new Vote("Voter 4", "Candidate 2"));
-            election.RegisterVotes(new Vote("Voter 5", "Candidate 2"));
-            election.RegisterVotes(new Vote("Voter 6", "Candidate 2"));
+            election.RegisterVotes(new Vote("Voter 4", "B"));
+            election.RegisterVotes(new Vote("Voter 5", "B"));
+            election.RegisterVotes(new Vote("Voter 6", "B"));
 
-            election.RegisterVotes(new Vote("Voter 7", "Candidate 3", "Candidate 1"));
+            election.RegisterVotes(new Vote("Voter 7", "C", "A"));
 
-            Assert.That(election.Winner, Is.EqualTo("Candidate 1"));
+            Assert.That(election.Winner, Is.EqualTo("A"));
         }
 
         [Test]
         public void When_a_candidate_has_the_most_but_not_a_majority()
         {
-            election.RegisterVotes(new Vote("Voter 1", "Candidate 1"));
-            election.RegisterVotes(new Vote("Voter 2", "Candidate 1"));
-            election.RegisterVotes(new Vote("Voter 3", "Candidate 1"));
-            election.RegisterVotes(new Vote("Voter 4", "Candidate 1"));
+            election.RegisterVotes(new Vote("Voter 1", "A"));
+            election.RegisterVotes(new Vote("Voter 2", "A"));
+            election.RegisterVotes(new Vote("Voter 3", "A"));
+            election.RegisterVotes(new Vote("Voter 4", "A"));
 
-            election.RegisterVotes(new Vote("Voter 5", "Candidate 2"));
-            election.RegisterVotes(new Vote("Voter 6", "Candidate 2"));
-            election.RegisterVotes(new Vote("Voter 7", "Candidate 2"));
+            election.RegisterVotes(new Vote("Voter 5", "B"));
+            election.RegisterVotes(new Vote("Voter 6", "B"));
+            election.RegisterVotes(new Vote("Voter 7", "B"));
 
-            election.RegisterVotes(new Vote("Voter 8", "Candidate 3", "Candidate 2"));
-            election.RegisterVotes(new Vote("Voter 9", "Candidate 3", "Candidate 2"));
+            election.RegisterVotes(new Vote("Voter 8", "C", "B"));
+            election.RegisterVotes(new Vote("Voter 9", "C", "B"));
 
-            Assert.That(election.Winner, Is.EqualTo("Candidate 2"));
+            Assert.That(election.Winner, Is.EqualTo("B"));
         }
     }
     [TestFixture]
@@ -205,27 +206,26 @@ namespace IRV.Tests
         }
 
         [Test]
-        [Ignore("Need to sit down and work this one out")]
         public void When_multiple_iterations_are_required_to_reach_a_winner()
         {
-            election.RegisterVotes(new Vote("Voter", "Candidate 1"));
-            election.RegisterVotes(new Vote("Voter", "Candidate 1"));
-            election.RegisterVotes(new Vote("Voter", "Candidate 1"));
-            election.RegisterVotes(new Vote("Voter", "Candidate 1"));
+            election.RegisterVotes(new Vote("Voter", "A"));
+            election.RegisterVotes(new Vote("Voter", "A"));
+            election.RegisterVotes(new Vote("Voter", "A", "C"));
+            election.RegisterVotes(new Vote("Voter", "A", "C"));
 
-            election.RegisterVotes(new Vote("Voter", "Candidate 2"));
-            election.RegisterVotes(new Vote("Voter", "Candidate 2"));
-            election.RegisterVotes(new Vote("Voter", "Candidate 2"));
+            election.RegisterVotes(new Vote("Voter", "B", "C"));
+            election.RegisterVotes(new Vote("Voter", "B", "E", "C"));
+            election.RegisterVotes(new Vote("Voter", "B", "A"));
 
-            election.RegisterVotes(new Vote("Voter", "Candidate 3", "Candidate 2"));
-            election.RegisterVotes(new Vote("Voter", "Candidate 3", "Candidate 2"));
+            election.RegisterVotes(new Vote("Voter", "C", "B"));
+            election.RegisterVotes(new Vote("Voter", "C", "E"));
 
-            election.RegisterVotes(new Vote("Voter", "Candidate 4", "Candidate 2"));
-            election.RegisterVotes(new Vote("Voter", "Candidate 4", "Candidate 2"));
+            election.RegisterVotes(new Vote("Voter", "D", "C", "A"));
+            election.RegisterVotes(new Vote("Voter", "D", "E", "C"));
 
-            election.RegisterVotes(new Vote("Voter", "Candidate 5", "Candidate 2"));
+            election.RegisterVotes(new Vote("Voter", "E", "C"));
 
-            Assert.That(election.Winner, Is.EqualTo("Candidate 3"));
+            Assert.That(election.Winner(), Is.EqualTo("C"));
         }
     }
 }
